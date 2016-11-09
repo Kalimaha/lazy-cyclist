@@ -1,7 +1,18 @@
 package org.geobricks.lazycyclist.core
 
+import scalaj.http._
+
 object Core {
   val BASE_URL_DIRECTIONS = "https://maps.googleapis.com/maps/api/directions/json?"
+
+  def directions(directionsURL: String): Either[String, String] = {
+    val response = Http(directionsURL).asString
+
+    response.code match {
+      case x if x > 299 => Left(response.body.trim)
+      case _            => Right(response.body.trim)
+    }
+  }
 
   def directionsURL(from: String, to: String, directionsAPIKey: String): Either[String, String] = directionsAPIKey match {
     case null => Left("Parameter 'directionsAPIKey' can't be null.")
