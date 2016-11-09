@@ -1,11 +1,11 @@
 package org.geobricks.lazycyclist.core
 
 object Core {
-  val BASE_URL_DIRECTIONS = ""
-  val API_KEY_DIRECTIONS = ""
-
-  def validate(from: String, to: String): Option[Boolean] = {
-    if (from != null && from.length > 0 && to != null && to.length > 0) Some(true)
-    else None
+  def validate(from: String, to: String): Either[String, Boolean] = (from, to) match {
+    case ("", _)    => Left("Parameter 'from' can't be empty.")
+    case (_, "")    => Left("Parameter 'to' can't be empty.")
+    case (null, _)  => Left("Parameter 'from' can't be null.")
+    case (_, null)  => Left("Parameter 'to' can't be null.")
+    case (_, _)     => Right(true)
   }
 }

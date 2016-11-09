@@ -7,7 +7,31 @@ class TestCore extends FunSpec {
   describe(".validate") {
     describe("when inputs are valid") {
       it("returns true") {
-        assert(validate("Home", "Work").contains(true))
+        assert(validate("Home", "Work") == Right(true))
+      }
+    }
+
+    describe("when 'from' is empty") {
+      it("returns an error") {
+        assert(validate("", "Work") == Left("Parameter 'from' can't be empty."))
+      }
+    }
+
+    describe("when 'from' is null") {
+      it("returns an error") {
+        assert(validate(null, "Work") == Left("Parameter 'from' can't be null."))
+      }
+    }
+
+    describe("when 'to' is empty") {
+      it("returns an error") {
+        assert(validate("Home", "") == Left("Parameter 'to' can't be empty."))
+      }
+    }
+
+    describe("when 'to' is null") {
+      it("returns an error") {
+        assert(validate("Home", null) == Left("Parameter 'to' can't be null."))
       }
     }
   }
