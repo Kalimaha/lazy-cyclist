@@ -1,6 +1,8 @@
 package org.geobricks.lazycyclist.core
 
 object Core {
+  def encode(address: String): String = address.replaceAll(" ", "+")
+
   def validate(from: String, to: String): Either[String, Boolean] = (from, to) match {
     case ("", _)    => Left("Parameter 'from' can't be empty.")
     case (_, "")    => Left("Parameter 'to' can't be empty.")

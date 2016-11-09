@@ -4,6 +4,12 @@ import org.geobricks.lazycyclist.core.Core._
 import org.scalatest.FunSpec
 
 class TestCore extends FunSpec {
+  describe(".encode") {
+    it("encodes a string for the API request") {
+      assert(encode("75 9th Ave, New York, NY") == "75+9th+Ave,+New+York,+NY")
+    }
+  }
+
   describe(".validate") {
     describe("when inputs are valid") {
       it("returns true") {
