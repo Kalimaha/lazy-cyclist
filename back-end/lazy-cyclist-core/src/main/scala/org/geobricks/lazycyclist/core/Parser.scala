@@ -8,18 +8,39 @@ case class Step(distance: BigInt, start: LatLon, end: LatLon)
 
 object Parser {
   def toStep(rawJSON: String): Either[String, Step] = {
-    val json              = parse(rawJSON)
+    val json  = parse(rawJSON)
+    val dist  = distance(json)
+    val end   = latLon("end_location", json)
+    val start = latLon("start_location", json)
 
-    val distance          = (json \ "distance" \ "value").values.asInstanceOf[BigInt]
+    (dist, start, end) match {
+      case (Right(_), Left(_), Left(_))   => Left("Start and end locations missing.")
+      case (Left(_), Right(_), Left(_))   => Left("Distance and end location missing.")
+      case (Left(_), Left(_), Right(_))   => Left("Distance and start location missing.")
+      case (Left(_), Left(_), Left(_))    => Left("Distance, start and end locations missing.")
+      case (Left(_), Right(_), Right(_))  => Left("Distance is not available for this step.")
+      case (Right(_), Right(_), Left(_))  => Left("End location is not available for this step.")
+      case (Right(_), Left(_), Right(_))  => Left("Start location is not available for this step.")
 
-    val start_lat         = (json \ "start_location" \ "lat").values.asInstanceOf[Double]
-    val start_lon         = (json \ "start_location" \ "lng").values.asInstanceOf[Double]
-    val start             = LatLon(start_lat, start_lon)
+      case (Right(_), Right(_), Right(_)) => Right(Step(dist.right.get, start.right.get, end.right.get))
+    }
+  }
 
-    val end_lat           = (json \ "end_location" \ "lat").values.asInstanceOf[Double]
-    val end_lon           = (json \ "end_location" \ "lng").values.asInstanceOf[Double]
-    val end               = LatLon(end_lat, end_lon)
+  def distance(json: JValue): Either[String, BigInt] = {
+    try   { Right((json \ "distance" \ "value").values.asInstanceOf[BigInt]) }
+    catch { case e: Exception => Left(e.getMessage) }
+  }
 
-    Right(Step(distance, start, end))
+  def latLon(jsonKey: String, json: JValue): Either[String, LatLon] = {
+    var lat: Option[Double] = None
+    var lon: Option[Double] = None
+
+    try {
+      lat = Some((json \ jsonKey \ "lat").values.asInstanceOf[Double])
+      lon = Some((json \ jsonKey \ "lng").values.asInstanceOf[Double])
+      Right(LatLon(lat.get, lon.get))
+    } catch {
+      case e: Exception => Left(e.getMessage)
+    }
   }
 }
