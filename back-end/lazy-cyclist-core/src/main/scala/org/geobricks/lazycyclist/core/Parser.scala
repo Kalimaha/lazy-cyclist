@@ -7,6 +7,15 @@ case class LatLon(lat: Double, lon: Double)
 case class Step(distance: BigInt, start: LatLon, end: LatLon)
 
 object Parser {
+  def toSteps(rawJSON: String): Either[String, List[Step]] = {
+    val json  = parse(rawJSON)
+    val steps = (json \ "steps").asInstanceOf[JArray].arr
+
+    Right(steps.map((step: JValue) => toStep(toJSON(step))).map(_.right.getOrElse(null)))
+  }
+
+  def toJSON(value: JValue): String = compact(render(value))
+
   def toStep(rawJSON: String): Either[String, Step] = {
     val json  = parse(rawJSON)
     val dist  = distance(json)
