@@ -109,5 +109,10 @@
       <version>0.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.json4s</groupId>
+      <artifactId>json4s-native_2.11</artifactId>
+      <version>3.4.0</version>
+      </dependency>
   </dependencies>
 </project>
