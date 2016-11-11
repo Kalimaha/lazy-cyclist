@@ -15,17 +15,18 @@ class TestParser extends FunSpec {
     val step_2  = Step(64, start_2, end_2)
 
     it("returns a list of Steps") {
-      assert(toSteps(json) == Right(List(step_1, step_2)))
+      assert(toSteps(json) == List(step_1, step_2))
     }
 
     describe("something wrong?") {
       val json = """{"steps":[{"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"},{"distance":{"text":"64 m","value":64},"duration":{"text":"1 min","value":8},"end_location":{"lat":-37.8164005,"lng":144.9962741},"html_instructions":"Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eThomas St\u003c/b\u003e","maneuver":"turn-left","polyline":{"points":"`cyeFeq~sZqBO"},"start_location":{"lat":-37.816969,"lng":144.9961949},"travel_mode":"BICYCLING"}]}"""
 
       it("returns a list of Steps") {
-        assert(toSteps(json) == Right(List(null, step_2)))
+        assert(toSteps(json) == List(step_2))
       }
     }
   }
+
   describe(".toStep") {
     val start = LatLon(-37.8168987, 144.9955671)
     val end   = LatLon(-37.816969, 144.9961949)
@@ -35,7 +36,7 @@ class TestParser extends FunSpec {
       val json  = """{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"}"""
 
       it("converts JSON into a Step object") {
-        assert(toStep(json) == Right(step))
+        assert(toStep(json).contains(step))
       }
     }
 
@@ -44,7 +45,7 @@ class TestParser extends FunSpec {
         val json  = """{"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Distance is not available for this step."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -52,7 +53,7 @@ class TestParser extends FunSpec {
         val json  = """{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lng":144.9955671},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Start location is not available for this step."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -60,7 +61,7 @@ class TestParser extends FunSpec {
         val json  = """{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Start location is not available for this step."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -68,7 +69,7 @@ class TestParser extends FunSpec {
         val json  = """{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"end_location":{"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("End location is not available for this step."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -76,7 +77,7 @@ class TestParser extends FunSpec {
         val json  = """{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("End location is not available for this step."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -84,7 +85,7 @@ class TestParser extends FunSpec {
         val json  = """{"duration":{"text":"1 min","value":7},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Distance, start and end locations missing."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -92,7 +93,7 @@ class TestParser extends FunSpec {
         val json  = """{"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Distance and start location missing."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -100,7 +101,7 @@ class TestParser extends FunSpec {
         val json  = """{"duration":{"text":"1 min","value":7},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Distance and end location missing."))
+          assert(toStep(json).isEmpty)
         }
       }
 
@@ -108,7 +109,7 @@ class TestParser extends FunSpec {
         val json  = """{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"travel_mode":"BICYCLING"}"""
 
         it("returns an error") {
-          assert(toStep(json) == Left("Start and end locations missing."))
+          assert(toStep(json).isEmpty)
         }
       }
     }
