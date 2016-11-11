@@ -10,6 +10,13 @@ object Parser {
   case class LatLon(lat: Double, lon: Double)
   case class Step(distance: BigInt, start: LatLon, end: LatLon)
 
+  def toRoute(rawJSON: String): Option[Route] = {
+    val json  = parse(rawJSON)
+    val steps = (json \ "legs").asInstanceOf[JArray].arr.head
+
+    Some(Route(toSteps(toJSON(steps))))
+  }
+
   def toSteps(rawJSON: String): List[Step] = {
     val json  = parse(rawJSON)
     val steps = (json \ "steps").asInstanceOf[JArray].arr
@@ -44,16 +51,20 @@ object Parser {
   }
 
   def latLon(jsonKey: String, json: JValue): Option[LatLon] = {
-    var lat: Option[Double] = None
-    var lon: Option[Double] = None
+    val latValue = read(jsonKey, "lat", json)
+    val lonValue = read(jsonKey, "lng", json)
 
-    try {
-      lat = Some((json \ jsonKey \ "lat").values.asInstanceOf[Double])
-      lon = Some((json \ jsonKey \ "lng").values.asInstanceOf[Double])
+    (latValue, lonValue) match {
+      case (None,     None)     => None
+      case (Some(_),  None)     => None
+      case (None,     Some(_))  => None
 
-      Some(LatLon(lat.get, lon.get))
-    } catch {
-      case e: Exception => None
+      case default              => Some(LatLon(latValue.get, lonValue.get))
     }
+  }
+
+  def read(jsonKey: String, value: String, json: JValue): Option[Double] = {
+    try   { Some((json \ jsonKey \ value).values.asInstanceOf[Double])}
+    catch { case e: Exception => None }
   }
 }
