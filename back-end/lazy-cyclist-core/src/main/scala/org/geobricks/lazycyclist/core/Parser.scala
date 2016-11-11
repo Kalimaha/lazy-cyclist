@@ -18,10 +18,12 @@ object Parser {
   }
 
   def toRoute(rawJSON: String): Option[Route] = {
-    val json  = parse(rawJSON)
-    val steps = (json \ "legs").asInstanceOf[JArray].arr.head
+    val json      = parse(rawJSON)
+    val stepsJSON = (json \ "legs").asInstanceOf[JArray].arr.head
+    val steps     = toSteps(toJSON(stepsJSON))
 
-    Some(Route(toSteps(toJSON(steps))))
+    if (steps.isEmpty)  { None }
+    else                { Some(Route(steps)) }
   }
 
   def toSteps(rawJSON: String): List[Step] = {
