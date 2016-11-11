@@ -10,6 +10,13 @@ object Parser {
   case class LatLon(lat: Double, lon: Double)
   case class Step(distance: BigInt, start: LatLon, end: LatLon)
 
+  def toRoutes(rawJSON: String): List[Route] = {
+    val json  = parse(rawJSON)
+    val routes = (json \ "routes").asInstanceOf[JArray].arr
+
+    routes.flatMap((step: JValue) => toRoute(toJSON(step)))
+  }
+
   def toRoute(rawJSON: String): Option[Route] = {
     val json  = parse(rawJSON)
     val steps = (json \ "legs").asInstanceOf[JArray].arr.head
