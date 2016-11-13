@@ -12,7 +12,7 @@ class TestDirectionsClient extends FunSpec with BeforeAndAfter {
   describe(".directionsURL") {
     describe("when the API key is valid") {
       it("creates the request URL for the Google Directions API") {
-        assert(client.directionsURL("Home", "Work") == Right("https://maps.googleapis.com/maps/api/directions/json?origin=Home&destination=Work&key=abc123"))
+        assert(client.directionsURL("Home", "Work") == Right("https://maps.googleapis.com/maps/api/directions/json?origin=Home&destination=Work&key=abc123&mode=bicycling&alternatives=true&avoid=ferries"))
       }
     }
     describe("when the API key is not valid") {

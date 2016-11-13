@@ -1,10 +1,42 @@
 package org.geobricks.lazycyclist.core
 
-import org.geobricks.lazycyclist.core.models.Models.{Segment, SegmentEnd, Step}
+import org.geobricks.lazycyclist.core.clients.{DirectionsClient, ElevationClient}
+import org.geobricks.lazycyclist.core.models.Models._
+import org.geobricks.lazycyclist.core.parsers.DirectionsParser
 
 import scala.annotation.tailrec
 
 object Core {
+
+  def elevationProfile(from: String, to: String, directions: DirectionsClient, elevation: ElevationClient): Unit = {
+    val out = for {
+      valid           <- DirectionsClient.validate(from, to).right
+      directionsURL   <- directions.directionsURL(directions.encode(from), directions.encode(to)).right
+      directionsJSON  <- directions.request(directionsURL).right
+      routes          <- DirectionsParser.toRoutes(directionsJSON).right
+      coordinates     <- routes2coordinates(routes).right
+      elevationURL    <- elevation.elevationURL(coordinates).right
+      elevationJSON   <- elevation.request(elevationURL).right
+    } yield elevationJSON
+
+    out match {
+      case Left(_)  => println(s"Error: ${out.left.get}")
+      case Right(_) => println(s"Error: ${out.right.get}")
+    }
+
+//    val routes = DirectionsParser.toRoutes(rawJSON.right.get)
+
+//    val coordinates = routes2coordinates(routes)
+//    println(coordinates)
+//    val elevationURL = elevation.elevationURL(coordinates)
+//    println(elevationURL)
+//    val elevationJSON = elevation.request(elevationURL.right.get)
+//    println(elevationJSON)
+  }
+
+  def routes2coordinates(routes: List[Route]): Either[String, List[LatLon]] = {
+    Right(routes.flatMap(_.steps.flatMap((s: Step) => List(s.start, s.end))))
+  }
 
   def steps2segments(steps: List[Step]): List[Segment] = {
     @tailrec

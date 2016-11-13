@@ -6,7 +6,7 @@ case class DirectionsClient(apiKey: String) extends GoogleAPIClient {
   def directionsURL(from: String, to: String): Either[String, String] = apiKey match {
     case null => Left("Parameter 'directionsAPIKey' can't be null.")
     case ""   => Left("Parameter 'directionsAPIKey' can't be empty.")
-    case key  => Right(s"${BASE_URL}origin=$from&destination=$to&key=$key")
+    case key  => Right(s"${BASE_URL}origin=$from&destination=$to&key=$key&mode=bicycling&alternatives=true&avoid=ferries")
   }
 }
 
