@@ -1,27 +1,11 @@
-package org.geobricks.lazycyclist.core.parsing
+package org.geobricks.lazycyclist.core.parsers
 
+import org.geobricks.lazycyclist.core.models.Models.{Field, LatLon, Route, Step}
 import org.json4s._
 import org.json4s.native.JsonMethods._
 
 
 object DirectionsParser {
-
-  case class Route(steps: List[Step])
-  case class LatLon(lat: Double, lon: Double)
-  case class Step(distance: BigInt, start: LatLon, end: LatLon)
-
-  object Field {
-    val LAT       = "lat"
-    val LON       = "lng"
-    val LEGS      = "legs"
-    val STEPS     = "steps"
-    val VALUE     = "value"
-    val ROUTES    = "routes"
-    val END       = "end_location"
-    val DISTANCE  = "distance"
-    val START     = "start_location"
-  }
-
   def toRoutes(rawJSON: String): List[Route] = {
     val json  = parse(rawJSON)
     val routes = (json \ Field.ROUTES).asInstanceOf[JArray].arr

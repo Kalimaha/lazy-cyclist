@@ -1,116 +1,36 @@
 package org.geobricks.lazycyclist.core
 
+import org.geobricks.lazycyclist.core.models.Models._
 import org.geobricks.lazycyclist.core.Core._
 import org.scalatest.FunSpec
-import fr.simply.util.ContentType
-import fr.simply.{GET, StaticServerResponse, StubServer}
 
 class TestCore extends FunSpec {
-  describe(".directions") {
-    val url = "http://localhost:8080/directions"
+  describe(".steps2segments") {
+    val step_1          = Step(56, LatLon(0, 0), LatLon(0, 0))
+    val step_2          = Step(130, LatLon(0, 0), LatLon(0, 0))
 
-    describe("when the request succeeds") {
-      val content = "{\"hello\": \"world\"}"
-      val route = GET (
-        path = "/directions",
-        response = StaticServerResponse(ContentType("application/json"), content, 200)
-      )
-      val server = new StubServer(8080, route)
+    val segmentStart_1  = SegmentEnd(Some(0), None, Some(step_1.start.lat), Some(step_1.start.lon))
+    val segmentEnd_1    = SegmentEnd(Some(56), None, Some(step_1.end.lat), Some(step_1.end.lon))
+    val segment_1       = Segment(segmentStart_1, segmentEnd_1)
 
-      it("returns JSON content") {
-        server.start
-        assert(directions("http://localhost:8080/directions") == Right(content))
-        server.stop
-      }
-    }
+    val segmentStart_2  = SegmentEnd(Some(56), None, Some(step_2.start.lat), Some(step_2.start.lon))
+    val segmentEnd_2    = SegmentEnd(Some(186), None, Some(step_2.end.lat), Some(step_2.end.lon))
+    val segment_2       = Segment(segmentStart_2, segmentEnd_2)
 
-    describe("when there is an internal server error") {
-      val content = "Internal server error."
-      val route = GET (
-        path = "/directions",
-        response = StaticServerResponse(ContentType("application/json"), content, 500)
-      )
-      val server = new StubServer(8080, route)
+    val steps           = List(step_1, step_2)
+    val segments        = List(segment_1, segment_2)
 
-      it("returns an error") {
-        server.start
-        assert(directions("http://localhost:8080/directions") == Left(content))
-        server.stop
-      }
-    }
-
-    describe("when there is a client error") {
-      val content = "Client error."
-      val route = GET (
-        path = "/directions",
-        response = StaticServerResponse(ContentType("application/json"), content, 400)
-      )
-      val server = new StubServer(8080, route)
-
-      it("returns an error") {
-        server.start
-        assert(directions("http://localhost:8080/directions") == Left(content))
-        server.stop
-      }
-    }
+    it("converts a list of Step into a list of Segment") { assert(steps2segments(steps) == segments) }
   }
 
-  describe(".directionsURL") {
-    describe("when the API key is valid") {
-      it("creates the request URL for the Google Directions API") {
-        assert(directionsURL("Home", "Work", "ABC") == Right("https://maps.googleapis.com/maps/api/directions/json?origin=Home&destination=Work&key=ABC"))
-      }
-    }
-    describe("when the API key is not valid") {
-      describe("when the API key is null") {
-        it("returns an error") {
-          assert(directionsURL("Home", "Work", null) == Left("Parameter 'directionsAPIKey' can't be null."))
-        }
-      }
+  describe(".step2segment") {
+    val start         = LatLon(-37.8168987, 144.9955671)
+    val end           = LatLon(-37.816969 , 144.9961949)
+    val step          = Step(56, start, end)
+    val segmentStart  = SegmentEnd(Some(0), None, Some(step.start.lat), Some(step.start.lon))
+    val segmentEnd    = SegmentEnd(Some(56), None, Some(step.end.lat), Some(step.end.lon))
+    val segment       = Segment(segmentStart, segmentEnd)
 
-      describe("when the API key is empty") {
-        it("returns an error") {
-          assert(directionsURL("Home", "Work", "") == Left("Parameter 'directionsAPIKey' can't be empty."))
-        }
-      }
-    }
-  }
-
-  describe(".encode") {
-    it("encodes a string for the API request") {
-      assert(encode("75 9th Ave, New York, NY") == "75+9th+Ave,+New+York,+NY")
-    }
-  }
-
-  describe(".validate") {
-    describe("when inputs are valid") {
-      it("returns true") {
-        assert(validate("Home", "Work") == Right(true))
-      }
-    }
-
-    describe("when 'from' is empty") {
-      it("returns an error") {
-        assert(validate("", "Work") == Left("Parameter 'from' can't be empty."))
-      }
-    }
-
-    describe("when 'from' is null") {
-      it("returns an error") {
-        assert(validate(null, "Work") == Left("Parameter 'from' can't be null."))
-      }
-    }
-
-    describe("when 'to' is empty") {
-      it("returns an error") {
-        assert(validate("Home", "") == Left("Parameter 'to' can't be empty."))
-      }
-    }
-
-    describe("when 'to' is null") {
-      it("returns an error") {
-        assert(validate("Home", null) == Left("Parameter 'to' can't be null."))
-      }
-    }
+    it("converts a Step into a Segment") { assert(step2segment(step, 0) == segment) }
   }
 }

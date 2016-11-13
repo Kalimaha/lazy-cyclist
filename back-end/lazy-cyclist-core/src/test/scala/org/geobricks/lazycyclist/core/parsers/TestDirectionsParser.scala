@@ -1,6 +1,7 @@
-package org.geobricks.lazycyclist.core.parsing
+package org.geobricks.lazycyclist.core.parsers
 
-import org.geobricks.lazycyclist.core.parsing.DirectionsParser._
+import org.geobricks.lazycyclist.core.models.Models.{LatLon, Route, Step}
+import org.geobricks.lazycyclist.core.parsers.DirectionsParser._
 import org.json4s.{JValue, _}
 import org.json4s.native.JsonMethods._
 import org.scalatest.FunSpec
