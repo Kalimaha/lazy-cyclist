@@ -7,8 +7,7 @@ object Models {
   case class LatLon(lat: Double, lon: Double)
   case class Step(distance: BigInt, start: LatLon, end: LatLon)
 
-  case class Segment(start: SegmentEnd, end: SegmentEnd)
-  case class SegmentEnd(x: Option[BigInt], y: Option[Double], lat: Option[Double], lon: Option[Double])
+  case class Segment(x0: Double, y0: Double, x1: Double, y1: Double)
   case class ElevationProfile(segments: List[Segment])
 
   object Field {

@@ -28,37 +28,22 @@ object Core {
       case Left(_)  => println(s"Error: ${out.left.get}")
       case Right(_) => println(s"Error: ${out.right.get}")
     }
-
-//    val routes = DirectionsParser.toRoutes(rawJSON.right.get)
-
-//    val coordinates = routes2coordinates(routes)
-//    println(coordinates)
-//    val elevationURL = elevation.elevationURL(coordinates)
-//    println(elevationURL)
-//    val elevationJSON = elevation.request(elevationURL.right.get)
-//    println(elevationJSON)
   }
+
+  def route2profile(route: Route, lleMap: Map[LatLon, Double]): Either[String, ElevationProfile] = ???
+
+  def distance(from: LatLon, to: LatLon): Double = {
+    val dlon = deg2rad(to.lon - from.lon)
+    val dlat = deg2rad(to.lat - from.lat)
+    val a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(deg2rad(from.lat)) * Math.cos(deg2rad(to.lat)) * Math.pow(Math.sin(dlon / 2), 2)
+    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+
+    Math.round(6373000 * c)
+  }
+
+  def deg2rad(deg: Double): Double = deg * Math.PI / 180
 
   def routes2coordinates(routes: List[Route]): Either[String, List[LatLon]] = {
     Right(routes.flatMap(_.steps.flatMap((s: Step) => List(s.start, s.end))))
-  }
-
-  def steps2segments(steps: List[Step]): List[Segment] = {
-    @tailrec
-    def loop(steps: List[Step], offset: BigInt, acc: List[Segment]): List[Segment] = steps match {
-      case Nil  => acc
-      case h::t =>
-        val segment = step2segment(h, offset)
-        loop(t, segment.end.x.get, segment :: acc)
-    }
-
-    loop(steps, 0, List()).reverse
-  }
-
-  def step2segment(step: Step, offset: BigInt): Segment = {
-    val start = SegmentEnd(Some(offset), None, Some(step.start.lat), Some(step.start.lon))
-    val end   = SegmentEnd(Some(offset + step.distance), None, Some(step.end.lat), Some(step.end.lon))
-
-    Segment(start, end)
   }
 }
