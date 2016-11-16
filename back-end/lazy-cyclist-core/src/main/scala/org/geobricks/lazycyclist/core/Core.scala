@@ -1,8 +1,10 @@
 package org.geobricks.lazycyclist.core
 
-import org.geobricks.lazycyclist.core.clients.{DirectionsClient, ElevationClient}
 import org.geobricks.lazycyclist.core.models.Models._
-import org.geobricks.lazycyclist.core.parsers.DirectionsParser
+import org.geobricks.lazycyclist.core.clients.DirectionsClient._
+import org.geobricks.lazycyclist.core.parsers.DirectionsParser._
+import org.geobricks.lazycyclist.core.parsers.ElevationParser._
+import org.geobricks.lazycyclist.core.clients.{DirectionsClient, ElevationClient}
 
 import scala.annotation.tailrec
 
@@ -10,14 +12,17 @@ object Core {
 
   def elevationProfile(from: String, to: String, directions: DirectionsClient, elevation: ElevationClient): Unit = {
     val out = for {
-      valid           <- DirectionsClient.validate(from, to).right
+      valid           <- validate(from, to).right
       directionsURL   <- directions.directionsURL(directions.encode(from), directions.encode(to)).right
       directionsJSON  <- directions.request(directionsURL).right
-      routes          <- DirectionsParser.toRoutes(directionsJSON).right
+      routes          <- toRoutes(directionsJSON).right
       coordinates     <- routes2coordinates(routes).right
       elevationURL    <- elevation.elevationURL(coordinates).right
       elevationJSON   <- elevation.request(elevationURL).right
-    } yield elevationJSON
+      latLonElevMap   <- latLonElevMap(elevationJSON).right
+    } yield latLonElevMap
+
+    println(out)
 
     out match {
       case Left(_)  => println(s"Error: ${out.left.get}")

@@ -18,8 +18,11 @@ object Models {
     val STEPS     = "steps"
     val VALUE     = "value"
     val ROUTES    = "routes"
-    val END       = "end_location"
+    val RESULTS   = "results"
     val DISTANCE  = "distance"
+    val LOCATION  = "location"
+    val ELEVATION = "elevation"
+    val END       = "end_location"
     val START     = "start_location"
   }
 }
