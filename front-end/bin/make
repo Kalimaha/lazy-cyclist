@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo 'Compiling Elm'
+elm-make src/elm/Main.elm --output=dist/main.js
