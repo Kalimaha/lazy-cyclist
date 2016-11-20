@@ -30,11 +30,11 @@ object Core {
     }
   }
 
-  def routes2XYs(routes: List[Route], lleMap: collection.mutable.Map[LatLon, Double]): Either[String, List[ElevationProfile]] = {
+  def routes2XYs(routes: List[Route], lleMap: Map[LatLon, Double]): Either[String, List[ElevationProfile]] = {
     Right(routes.map((r: Route) => route2XYs(r, lleMap)))
   }
 
-  def route2XYs(route: Route, lleMap: collection.mutable.Map[LatLon, Double]): ElevationProfile = {
+  def route2XYs(route: Route, lleMap: Map[LatLon, Double]): ElevationProfile = {
     val latLons: List[LatLon]   = route.steps.flatMap((s: Step) => List(s.start, s.end)).distinct
     val distances: List[Double] = latLons.sliding(2).toList.map((l: List[LatLon]) => distance(l.head, l.last))
     val cumulates               = accumulate((0 :: distances), 0, List()).reverse

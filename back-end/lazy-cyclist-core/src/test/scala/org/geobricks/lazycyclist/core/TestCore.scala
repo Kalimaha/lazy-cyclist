@@ -13,7 +13,7 @@ class TestCore extends FunSpec {
     val step_1            = Step(56, start, end_1)
     val step_2            = Step(56, end_1, end_2)
     val route             = Route(List(step_1, step_2))
-    val lleMap            = collection.mutable.Map(start -> 100.toDouble, end_1 -> 200.toDouble, end_2 -> 175.toDouble)
+    val lleMap            = Map(start -> 100.toDouble, end_1 -> 200.toDouble, end_2 -> 175.toDouble)
     val xy_1              = XY(0, 100)
     val xy_2              = XY(56, 200)
     val xy_3              = XY(120, 175)

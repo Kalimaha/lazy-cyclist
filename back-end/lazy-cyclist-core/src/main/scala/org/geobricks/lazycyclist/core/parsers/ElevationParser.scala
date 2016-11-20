@@ -5,15 +5,12 @@ import org.json4s._
 import org.json4s.native.JsonMethods._
 
 object ElevationParser {
-  def latLonElevMap(rawJSON: String): Either[String, collection.mutable.Map[LatLon, Double]] = {
+  def latLonElevMap(rawJSON: String): Either[String, Map[LatLon, Double]] = {
     try {
-      val json = parse(rawJSON)
+      val json    = parse(rawJSON)
       val results = (json \ Field.RESULTS).asInstanceOf[JArray].arr
-      val map = collection.mutable.Map[LatLon, Double]()
 
-      results.flatMap((result: JValue) => latLon2elev(result)).map(m => map += m)
-
-      Right(map)
+      Right(results.flatMap((result: JValue) => latLon2elev(result)).map(m => m._1 -> m._2).toMap)
     } catch {
       case e: Exception => Left(e.getMessage)
     }
