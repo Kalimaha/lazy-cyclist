@@ -7,8 +7,8 @@ object Models {
   case class LatLon(lat: Double, lon: Double)
   case class Step(distance: BigInt, start: LatLon, end: LatLon)
 
-  case class Segment(x0: Double, y0: Double, x1: Double, y1: Double)
-  case class ElevationProfile(segments: List[Segment])
+  case class XY(x: Double, y: Double)
+  case class ElevationProfile(points: List[XY])
 
   object Field {
     val LAT       = "lat"

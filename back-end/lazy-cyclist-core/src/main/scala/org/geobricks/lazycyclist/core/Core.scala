@@ -5,45 +5,41 @@ import org.geobricks.lazycyclist.core.clients.DirectionsClient._
 import org.geobricks.lazycyclist.core.parsers.DirectionsParser._
 import org.geobricks.lazycyclist.core.parsers.ElevationParser._
 import org.geobricks.lazycyclist.core.clients.{DirectionsClient, ElevationClient}
+import org.geobricks.lazycyclist.core.utils.MathUtils._
 
 import scala.annotation.tailrec
 
 object Core {
 
-  def elevationProfile(from: String, to: String, directions: DirectionsClient, elevation: ElevationClient): Unit = {
+  def elevationProfile(from: String, to: String, dc: DirectionsClient, ec: ElevationClient): Unit = {
     val out = for {
-      valid           <- validate(from, to).right
-      directionsURL   <- directions.directionsURL(directions.encode(from), directions.encode(to)).right
-      directionsJSON  <- directions.request(directionsURL).right
-      routes          <- toRoutes(directionsJSON).right
-      coordinates     <- routes2coordinates(routes).right
-      elevationURL    <- elevation.elevationURL(coordinates).right
-      elevationJSON   <- elevation.request(elevationURL).right
-      latLonElevMap   <- latLonElevMap(elevationJSON).right
-    } yield latLonElevMap
-
-    println(out)
+      valid             <- validate(from, to).right
+      directionsURL     <- dc.directionsURL(dc.encode(from), dc.encode(to)).right
+      directionsJSON    <- dc.request(directionsURL).right
+      routes            <- toRoutes(directionsJSON).right
+      coordinates       <- routes2coordinates(routes).right
+      elevationURL      <- ec.elevationURL(coordinates).right
+      elevationJSON     <- ec.request(elevationURL).right
+      latLonElevMap     <- latLonElevMap(elevationJSON).right
+      elevationProfiles <- routes2XYs(routes, latLonElevMap).right
+    } yield elevationProfiles
 
     out match {
       case Left(_)  => println(s"Error: ${out.left.get}")
-      case Right(_) => println(s"Error: ${out.right.get}")
+      case Right(_) => println(s"Success!\n\n ${out.right.get}")
     }
   }
 
-  def route2profile(route: Route, lleMap: Map[LatLon, Double]): Either[String, ElevationProfile] = ???
-
-  def distance(from: LatLon, to: LatLon): Double = {
-    val dlon = deg2rad(to.lon - from.lon)
-    val dlat = deg2rad(to.lat - from.lat)
-    val a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(deg2rad(from.lat)) * Math.cos(deg2rad(to.lat)) * Math.pow(Math.sin(dlon / 2), 2)
-    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-
-    Math.round(6373000 * c)
+  def routes2XYs(routes: List[Route], lleMap: collection.mutable.Map[LatLon, Double]): Either[String, List[ElevationProfile]] = {
+    Right(routes.map((r: Route) => route2XYs(r, lleMap)))
   }
 
-  def deg2rad(deg: Double): Double = deg * Math.PI / 180
+  def route2XYs(route: Route, lleMap: collection.mutable.Map[LatLon, Double]): ElevationProfile = {
+    val latLons: List[LatLon]   = route.steps.flatMap((s: Step) => List(s.start, s.end)).distinct
+    val distances: List[Double] = latLons.sliding(2).toList.map((l: List[LatLon]) => distance(l.head, l.last))
+    val cumulates               = accumulate((0 :: distances), 0, List()).reverse
 
-  def routes2coordinates(routes: List[Route]): Either[String, List[LatLon]] = {
-    Right(routes.flatMap(_.steps.flatMap((s: Step) => List(s.start, s.end))))
+    val xys = (latLons zip cumulates).map(p => XY(p._2.toString.toDouble, lleMap(p._1)))
+    ElevationProfile(xys)
   }
 }

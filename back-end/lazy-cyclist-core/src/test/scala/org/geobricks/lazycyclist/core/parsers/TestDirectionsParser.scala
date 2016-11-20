@@ -9,6 +9,17 @@ import org.scalatest.FunSpec
 class TestDirectionsParser extends FunSpec {
   def toJValue(rawJSON: String): JValue = parse(rawJSON)
 
+  describe(".routes2coordinates") {
+    val start   = LatLon(-37.8168987, 144.9955671)
+    val end     = LatLon(-37.816969 , 144.9961949)
+    val step    = Step(56, start, end)
+    val routes  = List(Route(List(step)))
+
+    it(".converts a list of routes into a list of coordinates") {
+      assert(routes2coordinates(routes) == Right(List(LatLon(-37.8168987, 144.9955671), LatLon(-37.816969, 144.9961949))))
+    }
+  }
+
   describe(".toRoutes") {
     describe("when the JSON is valid") {
       val json = """{"routes":[{"bounds":{"northeast":{"lat":-37.8164005,"lng":144.9994843},"southwest":{"lat":-37.8287644,"lng":144.9955671}},"copyrights":"Map data ©2016 Google","legs":[{"distance":{"text":"1.8 km","value":1797},"duration":{"text":"7 mins","value":442},"end_address":"511 Church St, Cremorne VIC 3121, Australia","end_location":{"lat":-37.8287644,"lng":144.9980297},"start_address":"2 Mcgoun St, Richmond VIC 3121, Australia","start_location":{"lat":-37.8168987,"lng":144.9955671},"steps":[{"distance":{"text":"56 m","value":56},"duration":{"text":"1 min","value":7},"end_location":{"lat":-37.816969,"lng":144.9961949},"html_instructions":"Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003eMcgoun St\u003c/b\u003e toward \u003cb\u003eThomas St\u003c/b\u003e","polyline":{"points":"rbyeFim~sZL{B"},"start_location":{"lat":-37.8168987,"lng":144.9955671},"travel_mode":"BICYCLING"}],"traffic_speed_entry":[],"via_waypoint":[]}],"overview_polyline":{"points":"rbyeFim~sZL{BqBORyDX{DHaAXiEbHr@tLhAjP~ApWjCxFl@t@HHsABk@"},"summary":"Church St","warnings":["Bicycling directions are in beta. Use caution – This route may contain streets that aren't suited for bicycling."],"waypoint_order":[]}]}"""

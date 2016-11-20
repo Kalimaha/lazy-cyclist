@@ -1,6 +1,6 @@
 package org.geobricks.lazycyclist.core.parsers
 
-import org.geobricks.lazycyclist.core.models.Models.{Field, LatLon}
+import org.geobricks.lazycyclist.core.models.Models._
 import org.json4s._
 import org.json4s.native.JsonMethods._
 

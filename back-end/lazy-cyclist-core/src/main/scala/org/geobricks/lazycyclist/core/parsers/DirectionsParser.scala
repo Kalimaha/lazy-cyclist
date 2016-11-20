@@ -32,7 +32,7 @@ object DirectionsParser {
   }
 
   def toStep(json: JValue): Option[Step] = {
-    val dist  = distance(json)
+    val dist  = distanceValue(json)
     val end   = latLon(Field.END, json)
     val start = latLon(Field.START, json)
 
@@ -42,7 +42,7 @@ object DirectionsParser {
     }
   }
 
-  def distance(json: JValue): Option[BigInt] =
+  def distanceValue(json: JValue): Option[BigInt] =
     try   { Some((json \ Field.DISTANCE \ Field.VALUE).values.asInstanceOf[BigInt]) }
     catch { case e: Exception => None }
 
@@ -59,4 +59,7 @@ object DirectionsParser {
   def read(jsonKey: String, value: String, json: JValue): Option[Double] =
     try   { Some((json \ jsonKey \ value).values.asInstanceOf[Double])}
     catch { case e: Exception => None }
+
+  def routes2coordinates(routes: List[Route]): Either[String, List[LatLon]] =
+    Right(routes.flatMap(_.steps.flatMap((s: Step) => List(s.start, s.end))))
 }
