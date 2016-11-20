@@ -7,8 +7,6 @@ import org.geobricks.lazycyclist.core.parsers.ElevationParser._
 import org.geobricks.lazycyclist.core.clients.{DirectionsClient, ElevationClient}
 import org.geobricks.lazycyclist.core.utils.MathUtils._
 
-import scala.annotation.tailrec
-
 object Core {
 
   def elevationProfile(from: String, to: String, dc: DirectionsClient, ec: ElevationClient): Unit = {
@@ -37,7 +35,7 @@ object Core {
   def route2XYs(route: Route, lleMap: Map[LatLon, Double]): ElevationProfile = {
     val latLons: List[LatLon]   = route.steps.flatMap((s: Step) => List(s.start, s.end)).distinct
     val distances: List[Double] = latLons.sliding(2).toList.map((l: List[LatLon]) => distance(l.head, l.last))
-    val cumulates               = accumulate((0 :: distances), 0, List()).reverse
+    val cumulates               = accumulate(0 :: distances)
 
     val xys = (latLons zip cumulates).map(p => XY(p._2.toString.toDouble, lleMap(p._1)))
     ElevationProfile(xys)

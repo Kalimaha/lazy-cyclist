@@ -16,9 +16,13 @@ object MathUtils {
 
   def deg2rad(deg: Double): Double = deg * Math.PI / 180
 
-  @tailrec
-  def accumulate(values: List[Double], offset: Double, acc: List[Double]): List[Double] = values match {
-    case Nil    => acc
-    case h :: t => accumulate(t, h + offset, (h + offset) :: acc)
+  def accumulate(values: List[Double]): List[Double] = {
+    @tailrec
+    def loop(values: List[Double], offset: Double, acc: List[Double]): List[Double] = values match {
+      case Nil => acc
+      case h :: t => loop(t, h + offset, (h + offset) :: acc)
+    }
+
+    loop(values, 0, List()).reverse
   }
 }

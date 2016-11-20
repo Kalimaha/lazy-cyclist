@@ -13,4 +13,19 @@ class TestMathUtils extends FunSpec {
       assert(distance(from, to) == 56)
     }
   }
+
+  describe(".deg2rad") {
+    it("converts degrees into radiants") {
+      assert(deg2rad(90) == 1.5707963267948966)
+    }
+  }
+
+  describe(".accumulate") {
+    val values    = List(0.0, 10.0, 20.0, 30.0)
+    val expected  = List(0, 10, 30, 60)
+
+    it("accumulates the values") {
+      assert(accumulate(values) == expected)
+    }
+  }
 }
