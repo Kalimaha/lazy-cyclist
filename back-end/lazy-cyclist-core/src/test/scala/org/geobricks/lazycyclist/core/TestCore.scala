@@ -17,7 +17,7 @@ class TestCore extends FunSpec {
     val xy_1              = XY(0, 100)
     val xy_2              = XY(56, 200)
     val xy_3              = XY(120, 175)
-    val elevationProfile  = ElevationProfile(List(xy_1, xy_2, xy_3))
+    val elevationProfile  = new ElevationProfile(List(xy_1, xy_2, xy_3))
 
     it("converts a Route into a list of XY points") {
       assert(route2XYs(route, lleMap) == elevationProfile)

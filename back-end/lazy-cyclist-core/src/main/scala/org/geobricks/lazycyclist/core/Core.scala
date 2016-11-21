@@ -38,6 +38,6 @@ object Core {
     val cumulates               = accumulate(0 :: distances)
 
     val xys = (latLons zip cumulates).map(p => XY(p._2.toString.toDouble, lleMap(p._1)))
-    ElevationProfile(xys)
+    new ElevationProfile(xys)
   }
 }
