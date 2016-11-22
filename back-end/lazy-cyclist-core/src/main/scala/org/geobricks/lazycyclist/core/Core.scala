@@ -9,8 +9,8 @@ import org.geobricks.lazycyclist.core.utils.MathUtils._
 
 object Core {
 
-  def elevationProfile(from: String, to: String, dc: DirectionsClient, ec: ElevationClient): Unit = {
-    val out = for {
+  def elevationProfile(from: String, to: String, dc: DirectionsClient, ec: ElevationClient): Either[String, List[EnhancedElevationProfile]] = {
+    for {
       valid             <- validate(from, to).right
       directionsURL     <- dc.directionsURL(dc.encode(from), dc.encode(to)).right
       directionsJSON    <- dc.request(directionsURL).right
@@ -20,12 +20,7 @@ object Core {
       elevationJSON     <- ec.request(elevationURL).right
       latLonElevMap     <- latLonElevMap(elevationJSON).right
       elevationProfiles <- routes2XYs(routes, latLonElevMap).right
-    } yield elevationProfiles
-
-    out match {
-      case Left(_)  => println(s"Error: ${out.left.get}")
-      case Right(_) => println(s"Success!\n\n ${out.right.get}")
-    }
+    } yield elevationProfiles.map(_.toEnhancedElevationProfile)
   }
 
   def routes2XYs(routes: List[Route], lleMap: Map[LatLon, Double]): Either[String, List[ElevationProfile]] = {
