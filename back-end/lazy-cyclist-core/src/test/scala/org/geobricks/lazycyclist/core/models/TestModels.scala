@@ -11,20 +11,22 @@ class TestModels extends FunSpec {
   describe("ElevationProfile") {
     val ep = new ElevationProfile(List(xy_1, xy_2, xy_3))
 
-    it("stores the points") {
-      assert(ep.points.length == 3)
-    }
+    describe(".toEnhancedElevationProfile") {
+      it("stores the points") {
+        assert(ep.toEnhancedElevationProfile.points.length == 3)
+      }
 
-    it("organizes the coordinates into segments") {
-      assert(ep.segments.length == 2)
-    }
+      it("computes the number of climbs") {
+        assert(ep.toEnhancedElevationProfile.climbs.length == 1)
+      }
 
-    it("computes the number of climbs") {
-      assert(ep.climbs.length == 1)
-    }
+      it("computes the total distance") {
+        assert(ep.toEnhancedElevationProfile.totalDistance == 120)
+      }
 
-    it("computes the total distance") {
-      assert(ep.distance == 120)
+      it("computes the average slope") {
+        assert(ep.toEnhancedElevationProfile.averageSlope == 178.57142857142858)
+      }
     }
   }
 }

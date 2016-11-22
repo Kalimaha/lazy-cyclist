@@ -1,6 +1,7 @@
 package org.geobricks.lazycyclist.core.utils
 
 import org.geobricks.lazycyclist.core.models.Models.LatLon
+import org.geobricks.lazycyclist.core.models.Models.XY
 
 import scala.annotation.tailrec
 
@@ -13,6 +14,10 @@ object MathUtils {
 
     Math.round(6373000 * c)
   }
+
+  def distance(from: XY, to: XY): Double = Math.abs(to.x - from.x)
+
+  def slope(from: XY, to: XY): Double = 100 * (to.y - from.y) / (to.x - from.x)
 
   def deg2rad(deg: Double): Double = deg * Math.PI / 180
 
