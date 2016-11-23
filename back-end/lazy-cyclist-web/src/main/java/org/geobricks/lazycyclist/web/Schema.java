@@ -1,18 +1,15 @@
 package org.geobricks.lazycyclist.web;
 
-import org.springframework.stereotype.Component;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-import org.springframework.core.io.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.charset.Charset;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.MediaType;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Component;
 
 
 @Component
@@ -41,5 +38,5 @@ public class Schema {
   }
 
   private void setSchemaPath(String schemaPath) { this.schemaPath = schemaPath; }
-  private void setSchema(String schema) { this.schema = schema; }
+  private void setSchema(String schema)         { this.schema = schema; }
 }
