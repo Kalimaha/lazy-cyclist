@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-04/hyper-schema#",
+  "type": "object",
+  "title": "Lazy Cyclist",
+  "description": "Help the lazy cyclist pick the easiest route.",
+  "links": [
+    {
+      "href": "/",
+      "method": "GET",
+      "rel": "schema",
+      "title": "Schema",
+      "description": "Description of the available endpoints."
+    }
+  ]
+}
