@@ -10,15 +10,15 @@
 		http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="org.geobricks.lazycyclist.*" />
+    <context:component-scan base-package="org.geobricks.lazycyclist.web.*" />
 
-    <context:property-placeholder location="/WEB-INF/lazy-cyclist.config"/>
+    <context:property-placeholder location="classpath:lazy-cyclist.config"/>
 
     <bean id="schema"
           class="org.geobricks.lazycyclist.web.Schema"
           lazy-init="false"
           init-method="init">
-	    <constructor-arg value="/json" />
+	    <constructor-arg value="classpath:/json" />
     </bean>
 
 </beans>
