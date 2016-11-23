@@ -27,12 +27,12 @@ public class TestSchema extends JerseyTest {
   }
 
   @Test
-  public void testSchema(){
+  public void testSchema() {
     WebResource webResource = resource().path("/");
     ClientResponse response = webResource.get(ClientResponse.class);
-    assertEquals(200, response.getStatus());
+    String responseBody     = response.getEntity(String.class);
 
-    String out = response.getEntity(String.class);
-    assertNotNull(out);
+    assertEquals(200, response.getStatus());
+    assertNotNull(responseBody);
   }
 }
