@@ -1,0 +1,19 @@
+#!/bin/bash
+
+APP_NAME=lazy-cyclist
+
+echo "Build the back-end: START"
+mvn clean install -f back-end
+echo "Build the back-end: DONE"
+
+echo "Rename WAR: START"
+mv back-end/$APP_NAME-web/target/$APP_NAME-web-0.1-SNAPSHOT ./dist/$APP_NAME-web.war
+echo "Rename WAR: DONE"
+
+echo "Login into Heroku: START"
+heroku login
+echo "Login into Heroku: DONE"
+
+echo "Deply the app: START"
+heroku war:deploy dist/$APP_NAME-web.war --app $APP_NAME
+echo "Deply the app: DONE"
