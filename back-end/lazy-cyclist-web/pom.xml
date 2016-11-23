@@ -137,5 +137,25 @@
             <artifactId>gson</artifactId>
             <version>2.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>2.11.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.scalaj</groupId>
+            <artifactId>scalaj-http_2.11</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geobricks</groupId>
+            <artifactId>lazy-cyclist-core</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json4s</groupId>
+            <artifactId>json4s-native_2.11</artifactId>
+            <version>3.4.0</version>
+        </dependency>
     </dependencies>
 </project>
