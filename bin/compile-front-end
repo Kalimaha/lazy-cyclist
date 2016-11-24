@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo ""
+echo "┌--------------------------------------┐"
+echo "|           The Lazy Cyclist           |"
+echo "└--------------------------------------┘"
+echo ""
+
+echo "Clean obsolete JS: START"
+rm front-end/dist/main.js
+echo "Clean obsolete JS: END"
+echo ""
+
+echo "----------------------------------------"
+echo ""
+
+echo "Compile ELM: START"
+elm-make --yes front-end/src/elm/Main.elm --output=front-end/dist/main.js
+echo "Compile ELM: END"
+
+echo ""
+echo "┌--------------------------------------┐"
+echo "|               Goodbye!               |"
+echo "└--------------------------------------┘"
+echo ""
