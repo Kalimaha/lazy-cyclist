@@ -2,6 +2,11 @@
 
 APP_NAME=lazy-cyclist
 
+echo "Initial clean up: START"
+rm -rf back-end/target
+rm ./dist/$APP_NAME-web.war
+echo "Initial clean up: END"
+
 echo "Build the back-end: START"
 mvn clean install -f back-end
 echo "Build the back-end: DONE"

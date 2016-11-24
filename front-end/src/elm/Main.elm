@@ -3,6 +3,8 @@ module Main exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
+import Http
+import Json.Decode as Decode
 
 type alias Model = {
   from: String,
@@ -17,6 +19,7 @@ type Msg
   = From String
   | To String
   | Submit
+  | Routes (Result Http.Error String)
 
 view : Model -> Html Msg
 view model =
@@ -64,16 +67,23 @@ update msg model =
     To to ->
       ( { model | to = to }, Cmd.none )
     Submit ->
-      let
-        url =
-          create_url model
-      in
-        ( model, Cmd.none )
+      (model, routes model)
+    Routes (Ok body) ->
+      (model, Cmd.none)
+    Routes (Err _) ->
+      (model, Cmd.none)
 
-create_url : Model -> String
-create_url model =
-  Debug.log model.from
-  "http://www.google.com/"
+routes : Model -> Cmd Msg
+routes model =
+  let
+    url =
+      "https://lazy-cyclist.herokuapp.com/"
+  in
+    Http.send Routes (Http.get url decodeRoutes)
+
+decodeRoutes : Decode.Decoder String
+decodeRoutes =
+  Decode.string
 
 subscriptions : Model -> Sub Msg
 subscriptions model =

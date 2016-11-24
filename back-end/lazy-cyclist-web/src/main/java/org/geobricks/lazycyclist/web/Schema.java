@@ -28,7 +28,10 @@ public class Schema {
 
   @GET
   public Response schema() {
-    return Response.status(200).entity(this.schema).build();
+    return Response.status(200)
+                   .entity(this.schema)
+                   .header("Access-Control-Allow-Origin", "*")
+                   .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
   }
 
   public void init() throws IOException {
