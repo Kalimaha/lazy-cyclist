@@ -27,6 +27,10 @@ public class Router {
     List<EnhancedElevationProfile> profiles = Core.elevationProfile(from, to, dc, ec).right().get();
     String json = EEPParser.toJSON(profiles);
 
-    return Response.status(200).entity(json).build();
+    return Response.status(200)
+                   .entity(json)
+                   .header("Access-Control-Allow-Origin", "*")
+                   .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                   .build();
   }
 }

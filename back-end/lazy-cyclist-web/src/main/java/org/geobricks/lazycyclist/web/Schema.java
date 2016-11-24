@@ -31,7 +31,8 @@ public class Schema {
     return Response.status(200)
                    .entity(this.schema)
                    .header("Access-Control-Allow-Origin", "*")
-                   .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT").build();
+                   .header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+                   .build();
   }
 
   public void init() throws IOException {

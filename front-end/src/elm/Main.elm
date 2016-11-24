@@ -35,6 +35,7 @@ view model =
             , type_ "text"
             , placeholder "e.g. Federation Square, Melbourne, Australia"
             , onInput From
+            , value "Federation Square, Melbourne, Australia"
           ] []
         , br [] []
         , label [] [
@@ -46,6 +47,7 @@ view model =
             , type_ "text"
             , placeholder "e.g. 511 Church St, Melbourne, Australia"
             , onInput To
+            , value "511 Church St, Melbourne, Australia"
           ] []
         , br [] []
         , button [
@@ -69,15 +71,18 @@ update msg model =
     Submit ->
       (model, routes model)
     Routes (Ok body) ->
+      Debug.log "OK"
       (model, Cmd.none)
-    Routes (Err _) ->
+    Routes (Err e) ->
+      Debug.log "ERROR"
+      Debug.log (toString e)
       (model, Cmd.none)
 
 routes : Model -> Cmd Msg
 routes model =
   let
     url =
-      "https://lazy-cyclist.herokuapp.com/"
+      "https://lazy-cyclist.herokuapp.com/route/" ++ model.from ++ "/" ++ model.to
   in
     Http.send Routes (Http.get url decodeRoutes)
 
