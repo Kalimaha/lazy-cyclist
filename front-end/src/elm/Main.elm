@@ -2,45 +2,55 @@ module Main exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (onInput, onClick)
 
-type alias Model =
-  String
+type alias Model = {
+  from: String,
+  to: String
+}
 
 init : ( Model, Cmd Msg )
 init =
-  ( "Hello", Cmd.none )
+  ( { from = "", to = "" }, Cmd.none )
 
-type Msg =
-  NoOp
+type Msg
+  = From String
+  | To String
+  | Submit
 
 view : Model -> Html Msg
 view model =
   div [ class "row" ] [
     div [ class "col-lg-12" ] [
-      Html.form [] [
-        div [ class "form-group" ] [
-          label [ for "from" ] [
-            i [ class "fa fa-home" ] []
-            , text " From"
-          ]
-          , input [
-              class "form-control"
-              , placeholder "e.g. Federation Square, Melbourne, Australia"
-            ] []
-          , br [] []
-          , label [ for "to" ] [
-            i [ class "fa fa-map-marker" ] []
-            , text " To"
-          ]
-          , input [
-              class "form-control"
-              , placeholder "e.g. 511 Church St, Melbourne, Australia"
-            ] []
-          , br [] []
-          , button [ class "btn btn-primary" ] [
-            i [ class "fa fa-bicycle" ] []
-            , text " Route!"
-          ]
+      div [ class "form-group" ] [
+        label [] [
+          i [ class "fa fa-home" ] []
+          , text " From"
+        ]
+        , input [
+            class "form-control input-lg"
+            , type_ "text"
+            , placeholder "e.g. Federation Square, Melbourne, Australia"
+            , onInput From
+          ] []
+        , br [] []
+        , label [] [
+          i [ class "fa fa-map-marker" ] []
+          , text " To"
+        ]
+        , input [
+            class "form-control input-lg"
+            , type_ "text"
+            , placeholder "e.g. 511 Church St, Melbourne, Australia"
+            , onInput To
+          ] []
+        , br [] []
+        , button [
+          class "btn btn-lg btn-primary"
+          , onClick Submit
+          ] [
+          i [ class "fa fa-bicycle" ] []
+          , text " Route!"
         ]
       ]
     ]
@@ -49,8 +59,21 @@ view model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
-    NoOp ->
-      ( model, Cmd.none )
+    From from ->
+      ( { model | from = from }, Cmd.none )
+    To to ->
+      ( { model | to = to }, Cmd.none )
+    Submit ->
+      let
+        url =
+          create_url model
+      in
+        ( model, Cmd.none )
+
+create_url : Model -> String
+create_url model =
+  Debug.log model.from
+  "http://www.google.com/"
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
