@@ -1,6 +1,6 @@
 module Main exposing (..)
 
-import Html exposing (Html, div, text, program, h1, form, label, input, br)
+import Html exposing (..)
 import Html.Attributes exposing (..)
 
 type alias Model =
@@ -19,17 +19,28 @@ view model =
     div [ class "col-lg-12" ] [
       Html.form [] [
         div [ class "form-group" ] [
-          label [ for "from" ] [ text "From" ]
+          label [ for "from" ] [
+            i [ class "fa fa-home" ] []
+            , text " From"
+          ]
           , input [
               class "form-control"
               , placeholder "e.g. Federation Square, Melbourne, Australia"
             ] []
           , br [] []
-          , label [ for "to" ] [ text "To" ]
+          , label [ for "to" ] [
+            i [ class "fa fa-map-marker" ] []
+            , text " To"
+          ]
           , input [
               class "form-control"
               , placeholder "e.g. 511 Church St, Melbourne, Australia"
             ] []
+          , br [] []
+          , button [ class "btn btn-primary" ] [
+            i [ class "fa fa-bicycle" ] []
+            , text " Route!"
+          ]
         ]
       ]
     ]
