@@ -14,6 +14,6 @@ echo "Login into Heroku: START"
 heroku login
 echo "Login into Heroku: DONE"
 
-echo "Deply the app: START"
+echo "Deploy the app: START"
 heroku war:deploy dist/$APP_NAME-web.war --app $APP_NAME
-echo "Deply the app: DONE"
+echo "Deploy the app: DONE"

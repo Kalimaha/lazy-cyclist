@@ -1,0 +1,9 @@
+#!/bin/bash
+
+echo "Clean obsolete JS: START"
+rm front-end/dist/main.js
+echo "Clean obsolete JS: END"
+
+echo "Compile ELM: START"
+elm-make --yes front-end/src/elm/Main.elm --output=front-end/dist/main.js
+echo "Compile ELM: END"
