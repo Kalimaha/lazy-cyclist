@@ -101,7 +101,14 @@ decodeRoutes =
 
 type alias ElevationProfile = {
   totalDistance: Float,
-  points: (List Point)
+  points: (List Point),
+  climbs: (List Climb)
+}
+
+type alias Climb = {
+  start:  Point,
+  end:    Point,
+  slope:  Float
 }
 
 type alias Point = {
@@ -115,13 +122,25 @@ elevationProfileListDecoder =
 
 elevationProfileDecoder : Decode.Decoder ElevationProfile
 elevationProfileDecoder =
-  Decode.map2 ElevationProfile
+  Decode.map3 ElevationProfile
     (Decode.field "totalDistance" Decode.float)
     (Decode.field "points" pointListDecoder)
+    (Decode.field "climbs" climbListDecoder)
 
 pointListDecoder : Decode.Decoder (List Point)
 pointListDecoder =
   Decode.list pointDecoder
+
+climbListDecoder : Decode.Decoder (List Climb)
+climbListDecoder =
+  Decode.list climbDecoder
+
+climbDecoder : Decode.Decoder Climb
+climbDecoder =
+  Decode.map3 Climb
+    (Decode.field "start" pointDecoder)
+    (Decode.field "end"   pointDecoder)
+    (Decode.field "slope" Decode.float)
 
 pointDecoder : Decode.Decoder Point
 pointDecoder =
