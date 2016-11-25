@@ -25,7 +25,7 @@ type Msg
   = From String
   | To String
   | Submit
-  | Routes (Result Http.Error String)
+  | Routes (Result Http.Error (List ElevationProfile))
 
 view : Model -> Html Msg
 view model =
@@ -90,12 +90,42 @@ routes model =
   let
     url =
       "https://lazy-cyclist.herokuapp.com/route/" ++ model.from ++ "/" ++ model.to
+    request =
+      Http.get url elevationProfileListDecoder
   in
-    Http.send Routes (Http.get url decodeRoutes)
+    Http.send Routes request
 
 decodeRoutes : Decode.Decoder String
 decodeRoutes =
   Decode.string
+
+type alias ElevationProfile = {
+  totalDistance: Float,
+  points: (List Point)
+}
+
+type alias Point = {
+  x: Float,
+  y: Float
+}
+
+elevationProfileListDecoder : Decode.Decoder (List ElevationProfile)
+elevationProfileListDecoder =
+  Decode.list elevationProfileDecoder
+
+elevationProfileDecoder : Decode.Decoder ElevationProfile
+elevationProfileDecoder =
+  Decode.map2 ElevationProfile
+    (Decode.field "totalDistance" Decode.float)
+    (Decode.field "points" pointListDecoder)
+
+pointListDecoder : Decode.Decoder (List Point)
+pointListDecoder =
+  Decode.list pointDecoder
+
+pointDecoder : Decode.Decoder Point
+pointDecoder =
+  Decode.map2 Point (Decode.field "x" Decode.float) (Decode.field "y" Decode.float)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
