@@ -13,7 +13,13 @@ type alias Model = {
 
 init : ( Model, Cmd Msg )
 init =
-  ( { from = "", to = "" }, Cmd.none )
+  (
+    {
+      from = "Federation Square, Melbourne, Australia",
+      to   = "511 Church St, Melbourne, Australia"
+    },
+    Cmd.none
+  )
 
 type Msg
   = From String
@@ -35,7 +41,7 @@ view model =
             , type_ "text"
             , placeholder "e.g. Federation Square, Melbourne, Australia"
             , onInput From
-            , value "Federation Square, Melbourne, Australia"
+            , value model.from
           ] []
         , br [] []
         , label [] [
@@ -47,7 +53,7 @@ view model =
             , type_ "text"
             , placeholder "e.g. 511 Church St, Melbourne, Australia"
             , onInput To
-            , value "511 Church St, Melbourne, Australia"
+            , value model.to
           ] []
         , br [] []
         , button [
@@ -72,6 +78,7 @@ update msg model =
       (model, routes model)
     Routes (Ok body) ->
       Debug.log "OK"
+      Debug.log (toString body)
       (model, Cmd.none)
     Routes (Err e) ->
       Debug.log "ERROR"
