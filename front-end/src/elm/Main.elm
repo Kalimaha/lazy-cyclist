@@ -1,5 +1,7 @@
 port module Main exposing (..)
 
+import Models exposing (..)
+import Decoders exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
@@ -7,10 +9,6 @@ import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 
-type alias Model = {
-  from: String,
-  to: String
-}
 
 init : ( Model, Cmd Msg )
 init =
@@ -71,9 +69,9 @@ view model =
     , hr [] []
     , div [ class "row" ] [
         div [ class "col-lg-12" ] [
-          div [ id "chart_0" ] [ text "Chart 1 Here" ]
-          , div [ id "chart_1" ] [ text "Chart 1 Here" ]
-          , div [ id "chart_2" ] [ text "Chart 1 Here" ]
+          div [ id "chart_0" ] []
+          , div [ id "chart_1" ] []
+          , div [ id "chart_2" ] []
         ]
       ]
   ]
@@ -113,8 +111,6 @@ encodePoints : List Point -> Encode.Value
 encodePoints points =
   Encode.list (List.map encodePoint points)
 
-  -- toString (List.map (\p -> "[" ++ (toString p.x) ++ "," ++ (toString p.y) ++ "]") points)
-
 port highcharts : (List Chart) -> Cmd msg
 
 routes : Model -> Cmd Msg
@@ -126,62 +122,6 @@ routes model =
       Http.get url elevationProfileListDecoder
   in
     Http.send Routes request
-
-decodeRoutes : Decode.Decoder String
-decodeRoutes =
-  Decode.string
-
-type alias Chart = {
-  id: String,
-  payload: String
-}
-
-type alias ElevationProfile = {
-  totalDistance: Float,
-  points: (List Point),
-  climbs: (List Climb)
-}
-
-type alias Climb = {
-  start:  Point,
-  end:    Point,
-  slope:  Float
-}
-
-type alias Point = {
-  x: Float,
-  y: Float
-}
-
-elevationProfileListDecoder : Decode.Decoder (List ElevationProfile)
-elevationProfileListDecoder =
-  Decode.list elevationProfileDecoder
-
-elevationProfileDecoder : Decode.Decoder ElevationProfile
-elevationProfileDecoder =
-  Decode.map3 ElevationProfile
-    (Decode.field "totalDistance" Decode.float)
-    (Decode.field "points" pointListDecoder)
-    (Decode.field "climbs" climbListDecoder)
-
-pointListDecoder : Decode.Decoder (List Point)
-pointListDecoder =
-  Decode.list pointDecoder
-
-climbListDecoder : Decode.Decoder (List Climb)
-climbListDecoder =
-  Decode.list climbDecoder
-
-climbDecoder : Decode.Decoder Climb
-climbDecoder =
-  Decode.map3 Climb
-    (Decode.field "start" pointDecoder)
-    (Decode.field "end"   pointDecoder)
-    (Decode.field "slope" Decode.float)
-
-pointDecoder : Decode.Decoder Point
-pointDecoder =
-  Decode.map2 Point (Decode.field "x" Decode.float) (Decode.field "y" Decode.float)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
