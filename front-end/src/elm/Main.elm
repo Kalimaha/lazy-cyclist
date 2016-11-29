@@ -16,8 +16,8 @@ init : ( Model, Cmd Msg )
 init =
   (
     {
-      from = "2 McGoun St, Melbourne, Australia",
-      to   = "511 Church St, Melbourne, Australia"
+      to = "2 McGoun St, Melbourne, Australia",
+      from   = "511 Church St, Melbourne, Australia"
     },
     Cmd.none
   )
@@ -96,25 +96,20 @@ toChart : Int -> ElevationProfile -> Chart
 toChart idx ep =
   ({
     id = "chart_" ++ toString idx,
-    payload = chartPayload ep
+    payload = chartPayload idx ep
   })
 
-chartPayload : ElevationProfile -> String
-chartPayload ep =
-  Debug.log(
-    String.concat [
-      """{"""
-      , """"chart":{"type": "areaspline"},"""
-      , (encodeClimbs ep.climbs)
-      , ""","""
-      , """"series":[{"data":"""
-      , (Encode.encode 0 (encodePoints ep.points))
-      , """}]"""
-      , """}"""]
-  )
+chartPayload : Int -> ElevationProfile -> String
+chartPayload idx ep =
   String.concat [
     """{"""
-    , """"chart":{"type": "areaspline"},"""
+    , """"chart":{"type":"areaspline","zoomType":"xy"},"""
+    , """"credits":{"enabled":false},"""
+    , """ "title":{"text":"Route """ ++ toString (1 + idx) ++ """"},"""
+    , """ "subtitle":{"text":"Total Distance: """ ++ toString (ep.totalDistance) ++ """ [m], Total Climbs: """ ++ toString (List.length ep.climbs) ++ """"},"""
+    , """"yAxis": {"gridLineWidth": 0, "title":{"text":"Elevation [m]"}},"""
+    , """"legend":{"enabled":false},"""
+    , """"plotOptions":{"series":{"fillColor":"#009B77","color":"#000"},"areaspline":{"marker":{"enabled":false},"fillOpacity":1,"enableMouseTracking":false}},"""
     , (encodeClimbs ep.climbs)
     , ""","""
     , """"series":[{"data":"""

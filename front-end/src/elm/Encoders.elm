@@ -19,9 +19,19 @@ encodeClimb climb =
     """{"""
     , """ "from": """ ++ toString (climb.start.x) ++ ""","""
     , """"to": """ ++ toString (climb.end.x) ++ ""","""
-    , """ "color": "#CA1616" """
+    , """"color": "#9B2335", """
+    , """"borderWidth": 1, """
+    , """"borderColor": "#FFF", """
+    , """"label": { "text": " """ ++ toString (round climb.slope) ++ """%", "style": { "color": "#fff" } } """
     , """}"""
   ]
+
+round : Float -> Float
+round f =
+  let tenTimes =
+    f * 10
+  in
+    (toFloat (Basics.round(tenTimes))) / 10
 
 encodePoint : Point -> Encode.Value
 encodePoint point =
