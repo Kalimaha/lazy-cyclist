@@ -2,19 +2,21 @@ port module Main exposing (..)
 
 import Models exposing (..)
 import Decoders exposing (..)
+import Encoders exposing (..)
+
+import Http
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onInput, onClick)
-import Http
-import Json.Decode as Decode
 import Json.Encode as Encode
+
 
 
 init : ( Model, Cmd Msg )
 init =
   (
     {
-      from = "Federation Square, Melbourne, Australia",
+      from = "2 McGoun St, Melbourne, Australia",
       to   = "511 Church St, Melbourne, Australia"
     },
     Cmd.none
@@ -99,17 +101,26 @@ toChart idx ep =
 
 chartPayload : ElevationProfile -> String
 chartPayload ep =
-  Debug.log (toString ep.points)
-  -- Debug.log (toString encodePoints ep.points)
-  """{"series":[{"data":""" ++ (Encode.encode 0 (encodePoints ep.points)) ++ """}]}"""
-
-encodePoint : Point -> Encode.Value
-encodePoint point =
-  Encode.list [Encode.float point.x, Encode.float point.y]
-
-encodePoints : List Point -> Encode.Value
-encodePoints points =
-  Encode.list (List.map encodePoint points)
+  Debug.log(
+    String.concat [
+      """{"""
+      , """"chart":{"type": "areaspline"},"""
+      , (encodeClimbs ep.climbs)
+      , ""","""
+      , """"series":[{"data":"""
+      , (Encode.encode 0 (encodePoints ep.points))
+      , """}]"""
+      , """}"""]
+  )
+  String.concat [
+    """{"""
+    , """"chart":{"type": "areaspline"},"""
+    , (encodeClimbs ep.climbs)
+    , ""","""
+    , """"series":[{"data":"""
+    , (Encode.encode 0 (encodePoints ep.points))
+    , """}]"""
+    , """}"""]
 
 port highcharts : (List Chart) -> Cmd msg
 
