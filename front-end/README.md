@@ -3,7 +3,7 @@
 This folder contains the Elm source code for the Lazy Cyclist app. Elm is in charge of:
 
 * Displaying a simple form
-* Sending the form data to the Lazy Cyclist REST service
+* Sending the form data to the [Lazy Cyclist REST service](https://lazy-cyclist.herokuapp.com/)
 * Parsing the JSON response
 * Creating the Highcharts payload for the charts
 * Sending the payload to Highcharts through a port
