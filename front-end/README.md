@@ -22,6 +22,6 @@ designers more difficult.
 front-end. Elm also comes with `elm-reactor` that updates the page at every change, but it seems to me that it does not work 
 with the `embed` mode.
 * **Interoperability with JavaScript:** To interact with JavaScript libraries (_Highcharts in my case_) you are required to define 
-a `port` in Elm, but also to write JavaScript code, which forces you to know, and maintain, two different source codes.
+a `port` in Elm, but also to write JavaScript code, which forces you to know (_and synch, and maintain_) two different source codes.
 * **JSON parsing:** I was forced to model the JSON output of an API into Elm types to consume the service, which account for nearly 
 half of my source code. Maybe there's a more generic way to _explore_ a JSON, not sure yet.
