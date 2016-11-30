@@ -20,7 +20,8 @@
 
     <script type="text/javascript">
       function loadElm() {
-        var elm = Elm.Main.embed(document.getElementById('placeholder'));
+        var elm = Elm.Main.embed(document.getElementById('placeholder'))
+
         elm.ports.highcharts.subscribe(function(charts) {
           charts.forEach(chart => {
             Highcharts.chart(chart.id, JSON.parse(chart.payload));

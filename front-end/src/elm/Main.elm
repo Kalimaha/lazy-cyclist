@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Models exposing (..)
+import Constructors exposing (..)
 import Decoders exposing (..)
 import Encoders exposing (..)
 
@@ -72,7 +73,9 @@ view model =
     , div [ class "row" ] [
         div [ class "col-lg-12" ] [
           div [ id "chart_0" ] []
+          , hr [] []
           , div [ id "chart_1" ] []
+          , hr [] []
           , div [ id "chart_2" ] []
         ]
       ]
@@ -101,21 +104,23 @@ toChart idx ep =
 
 chartPayload : Int -> ElevationProfile -> String
 chartPayload idx ep =
+  let hc =
+    Constructors.highcharts (chartTitle idx) (chartSubTitle ep) "Elevation [m]" ep.points ep.climbs
+  in
+    Encode.encode 0 (encodeHighcharts hc)
+
+chartTitle : Int -> String
+chartTitle idx =
+  "Route " ++ toString (1 + idx)
+
+chartSubTitle : ElevationProfile -> String
+chartSubTitle ep =
   String.concat [
-    """{"""
-    , """"chart":{"type":"areaspline","zoomType":"xy"},"""
-    , """"credits":{"enabled":false},"""
-    , """ "title":{"text":"Route """ ++ toString (1 + idx) ++ """"},"""
-    , """ "subtitle":{"text":"Total Distance: """ ++ toString (ep.totalDistance) ++ """ [m], Total Climbs: """ ++ toString (List.length ep.climbs) ++ """"},"""
-    , """"yAxis": {"gridLineWidth": 0, "title":{"text":"Elevation [m]"}},"""
-    , """"legend":{"enabled":false},"""
-    , """"plotOptions":{"series":{"fillColor":"#009B77","color":"#000"},"areaspline":{"marker":{"enabled":false},"fillOpacity":1,"enableMouseTracking":false}},"""
-    , (encodeClimbs ep.climbs)
-    , ""","""
-    , """"series":[{"data":"""
-    , (Encode.encode 0 (encodePoints ep.points))
-    , """}]"""
-    , """}"""]
+    "Total Distance: ",
+    toString ep.totalDistance,
+    "[m], Total Climbs: ",
+    toString (List.length ep.climbs)
+  ]
 
 port highcharts : (List Chart) -> Cmd msg
 
