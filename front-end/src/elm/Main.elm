@@ -12,13 +12,13 @@ import Html.Events exposing (onInput, onClick)
 import Json.Encode as Encode
 
 
-
 init : ( Model, Cmd Msg )
 init =
   (
     {
       to = "2 McGoun St, Melbourne, Australia",
-      from   = "511 Church St, Melbourne, Australia"
+      from   = "511 Church St, Melbourne, Australia",
+      state = Idle
     },
     Cmd.none
   )
@@ -69,6 +69,7 @@ view model =
         ]
       ]
     ]
+    , courtesy(model)
     , hr [] []
     , div [ class "row" ] [
         div [ class "col-lg-12" ] [
@@ -81,6 +82,28 @@ view model =
       ]
   ]
 
+courtesy : Model -> Html Msg
+courtesy model =
+  case model.state of
+    Idle ->
+      div [] [
+        hr [] []
+        , div [ class "row text-center" ] [
+            div [ class "col-lg-12" ] [
+              b [] [ text ("From: " ++ model.from ++ ", To: " ++ model.to) ]
+            ]
+          ]
+      ]
+    Loading ->
+      div [] [
+        hr [] []
+        , div [ class "row text-center" ] [
+            div [ class "col-lg-12" ] [
+              i [ class "fa fa-cog fa-spin fa-3x" ] []
+            ]
+          ]
+      ]
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
@@ -89,11 +112,11 @@ update msg model =
     To to ->
       ( { model | to = to }, Cmd.none )
     Submit ->
-      (model, routes model)
+      ( { model | state = Loading }, routes model)
     Routes (Ok body) ->
-      (model, highcharts (List.indexedMap toChart body))
+      ( { model | state = Idle }, highcharts (List.indexedMap toChart body))
     Routes (Err e) ->
-      (model, Cmd.none)
+      ( { model | state = Idle }, Cmd.none)
 
 toChart : Int -> ElevationProfile -> Chart
 toChart idx ep =

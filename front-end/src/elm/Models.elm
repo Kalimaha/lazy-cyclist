@@ -2,8 +2,13 @@ module Models exposing (..)
 
 type alias Model = {
   from: String,
-  to: String
+  to: String,
+  state: State
 }
+
+type State
+  = Idle
+  | Loading
 
 type alias Chart = {
   id: String,
