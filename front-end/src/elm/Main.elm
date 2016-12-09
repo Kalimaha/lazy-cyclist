@@ -1,6 +1,7 @@
 port module Main exposing (..)
 
 import Models exposing (..)
+import Constructors exposing (..)
 import Decoders exposing (..)
 import Encoders exposing (..)
 
@@ -11,13 +12,13 @@ import Html.Events exposing (onInput, onClick)
 import Json.Encode as Encode
 
 
-
 init : ( Model, Cmd Msg )
 init =
   (
     {
       to = "2 McGoun St, Melbourne, Australia",
-      from   = "511 Church St, Melbourne, Australia"
+      from   = "511 Church St, Melbourne, Australia",
+      state = Idle
     },
     Cmd.none
   )
@@ -68,15 +69,40 @@ view model =
         ]
       ]
     ]
+    , courtesy(model)
     , hr [] []
     , div [ class "row" ] [
         div [ class "col-lg-12" ] [
           div [ id "chart_0" ] []
+          , hr [] []
           , div [ id "chart_1" ] []
+          , hr [] []
           , div [ id "chart_2" ] []
         ]
       ]
   ]
+
+courtesy : Model -> Html Msg
+courtesy model =
+  case model.state of
+    Idle ->
+      div [] [
+        hr [] []
+        , div [ class "row text-center" ] [
+            div [ class "col-lg-12" ] [
+              b [] [ text ("From: " ++ model.from ++ ", To: " ++ model.to) ]
+            ]
+          ]
+      ]
+    Loading ->
+      div [] [
+        hr [] []
+        , div [ class "row text-center" ] [
+            div [ class "col-lg-12" ] [
+              i [ class "fa fa-cog fa-spin fa-3x" ] []
+            ]
+          ]
+      ]
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -86,11 +112,11 @@ update msg model =
     To to ->
       ( { model | to = to }, Cmd.none )
     Submit ->
-      (model, routes model)
+      ( { model | state = Loading }, routes model)
     Routes (Ok body) ->
-      (model, highcharts (List.indexedMap toChart body))
+      ( { model | state = Idle }, highcharts (List.indexedMap toChart body))
     Routes (Err e) ->
-      (model, Cmd.none)
+      ( { model | state = Idle }, Cmd.none)
 
 toChart : Int -> ElevationProfile -> Chart
 toChart idx ep =
@@ -101,21 +127,23 @@ toChart idx ep =
 
 chartPayload : Int -> ElevationProfile -> String
 chartPayload idx ep =
+  let hc =
+    Constructors.highcharts (chartTitle idx) (chartSubTitle ep) "Elevation [m]" ep.points ep.climbs
+  in
+    Encode.encode 0 (encodeHighcharts hc)
+
+chartTitle : Int -> String
+chartTitle idx =
+  "Route " ++ toString (1 + idx)
+
+chartSubTitle : ElevationProfile -> String
+chartSubTitle ep =
   String.concat [
-    """{"""
-    , """"chart":{"type":"areaspline","zoomType":"xy"},"""
-    , """"credits":{"enabled":false},"""
-    , """ "title":{"text":"Route """ ++ toString (1 + idx) ++ """"},"""
-    , """ "subtitle":{"text":"Total Distance: """ ++ toString (ep.totalDistance) ++ """ [m], Total Climbs: """ ++ toString (List.length ep.climbs) ++ """"},"""
-    , """"yAxis": {"gridLineWidth": 0, "title":{"text":"Elevation [m]"}},"""
-    , """"legend":{"enabled":false},"""
-    , """"plotOptions":{"series":{"fillColor":"#009B77","color":"#000"},"areaspline":{"marker":{"enabled":false},"fillOpacity":1,"enableMouseTracking":false}},"""
-    , (encodeClimbs ep.climbs)
-    , ""","""
-    , """"series":[{"data":"""
-    , (Encode.encode 0 (encodePoints ep.points))
-    , """}]"""
-    , """}"""]
+    "Total Distance: ",
+    toString ep.totalDistance,
+    "[m], Total Climbs: ",
+    toString (List.length ep.climbs)
+  ]
 
 port highcharts : (List Chart) -> Cmd msg
 
