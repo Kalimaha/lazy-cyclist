@@ -16,22 +16,9 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="http://code.highcharts.com/highcharts.js"></script>
-    <script src="dist/main.js" charset="utf-8"></script>
-
-    <script type="text/javascript">
-      function loadElm() {
-        var elm = Elm.Main.embed(document.getElementById('placeholder'))
-
-        elm.ports.highcharts.subscribe(function(charts) {
-          charts.forEach(chart => {
-            Highcharts.chart(chart.id, JSON.parse(chart.payload));
-          })
-        })
-      }
-    </script>
   </head>
 
-  <body onload="loadElm()">
+  <body>
     <div class="container">
       <hr>
       <h1 class="text-center">
