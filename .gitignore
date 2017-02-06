@@ -5,5 +5,4 @@ back-end/lazy-cyclist-web/.idea
 back-end/.idea
 dist/
 back-end/lazy-cyclist-web/out/
-front-end/elm-stuff/
-elm-stuff/
+front-end/node_modules/
