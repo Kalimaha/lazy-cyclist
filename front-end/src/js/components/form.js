@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 
 
-const Form = ({ submitAction }) => (
+const Form = ({ from, to, updateFrom, updateTo, submitAction }) => (
   <div>
     <div className="row">
       <div className="col-lg-12">
@@ -10,7 +10,10 @@ const Form = ({ submitAction }) => (
         </label>
       </div>
       <div className="col-lg-12">
-        <input className="form-control" placeholder="e.g. Federation Square"/>
+        <input  className="form-control"
+                placeholder="e.g. Federation Square, Melbourne, Australia"
+                defaultValue={from}
+                onChange={updateFrom} />
       </div>
     </div>
     <br />
@@ -21,7 +24,10 @@ const Form = ({ submitAction }) => (
         </label>
       </div>
       <div className="col-lg-12">
-        <input className="form-control" placeholder="e.g. REA Group"/>
+        <input  className="form-control"
+                placeholder="e.g. 511 Church St, Melbourne, Australia"
+                defaultValue={to}
+                onChange={updateTo} />
       </div>
     </div>
     <br />
@@ -36,7 +42,9 @@ const Form = ({ submitAction }) => (
 )
 
 Form.propTypes = {
-  submitAction: PropTypes.func.isRequired
+  submitAction: PropTypes.func.isRequired,
+  updateFrom: PropTypes.func.isRequired,
+  updateTo: PropTypes.func.isRequired
 }
 
 export default Form

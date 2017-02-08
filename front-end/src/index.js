@@ -1,19 +1,17 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 import { createStore } from 'redux'
+import { Provider } from 'react-redux'
 import App from './js/components/app'
-// import counter from './src/main/js/reducers/index'
+import Reducer from './js/reducers/index'
 
 
-// const store = createStore(counter)
+const store = createStore(Reducer)
 const placeholder = document.getElementById('placeholder')
 
-function render() {
-  ReactDOM.render(
-    <App />,
-    placeholder
-  )
-}
-
-render()
-// store.subscribe(render)
+render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  placeholder
+)
