@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 
 
-const Form = ({ from, to, updateFrom, updateTo, submitAction }) => (
+const Form = ({ from, to, updateFrom, updateTo, submitAction, valid }) => (
   <div>
     <div className="row">
       <div className="col-lg-12">
@@ -33,7 +33,7 @@ const Form = ({ from, to, updateFrom, updateTo, submitAction }) => (
     <br />
     <div className="row">
       <div className="col-lg-12">
-        <button onClick={submitAction} className="btn btn-primary" style={{width: "100%"}}>
+        <button disabled={!valid} onClick={submitAction} className="btn btn-primary" style={{width: "100%"}}>
           Route!
         </button>
       </div>
