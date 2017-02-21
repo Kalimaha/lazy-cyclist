@@ -6,3 +6,4 @@ back-end/.idea
 dist/
 back-end/lazy-cyclist-web/out/
 front-end/node_modules/
+front-end/redux/node_modules/
