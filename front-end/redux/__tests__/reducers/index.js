@@ -1,8 +1,8 @@
 import Reducer from '../../src/js/reducers/index'
 
 describe('Reducer', () => {
-  const from          = 'Initial Location'
-  const to            = 'Final Location'
+  const from          = 'Federation Square, Melbourne, Australia'
+  const to            = '511 Church St, Melbourne, Australia'
   const initial_state = {
     from:     from,
     to:       to,
